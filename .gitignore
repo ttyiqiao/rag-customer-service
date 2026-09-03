@@ -1,0 +1,20 @@
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+env/
+venv/
+ENV/
+
+# Streamlit
+.streamlit/
+
+# 运行时数据（不需要提交）
+chat_history/
+chroma_db/
+md5.txt
+
+# macOS
+.DS_Store

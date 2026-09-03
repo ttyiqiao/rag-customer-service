@@ -1,0 +1,11 @@
+# RAG 智能客服系统 — 依赖清单
+streamlit==1.12.0
+langchain==0.0.335
+langchain-core==0.1.0
+langchain-community==0.0.1
+langchain-chroma==0.1.0
+langchain-text-splitters==0.0.1
+chromadb==0.4.24
+dashscope==1.14.0
+tongyi-qwen-agent==0.1.0
+python-dotenv==1.0.0
