@@ -26,7 +26,7 @@ def print_prompt(prompt):
 class RagService(object):
     def __init__(self):
         self.vector_service = VectorStoreService(
-            embedding = DashScopeEmbeddings(model = config.embedding_model_name)
+            embedding = DashScopeEmbeddings(model_name=config.embedding_model_name)
         )
 
         self.prompt_template = ChatPromptTemplate.from_messages(
@@ -57,29 +57,9 @@ class RagService(object):
 
             return formatted_str
 
-
-
-        # "context": retriever | format_document会报错，写函数排查
-        # def temp1(value):
-        #     print("---------", value)
-        #     return value
-        # "context": RunnableLambda(temp1) | retriever | format_document 调用发现打印出来{'input': '我体重120斤，进行尺码推荐', 'history': []}
-        # 但是retriever 应该只要"我体重120斤，进行尺码推荐"这个str，因此用函数进行转换
         def format_for_retriever(value:dict) -> str:
             return value["input"]
-    
 
-
-
-
-        # 新报错：Expected: ['context', 'history', 'input'] Received: ['input', 'context']
-        # 新报错是因为history被扔了，写函数排查
-        # def temp2(value):
-        #     print("---------", value)
-        #     return value
-        # "context": RunnableLambda(temp1) | retriever | format_document} | RunnableLambda(temp2) | self.prompt_template | 调用排查
-        # 打印出{'input': {'input': '我体重120斤，进行尺码推荐', 'history': []}, 'context': "文档片段: 身高:...
-        # 写函数转换
         def format_for_prompt_template(value):
             new_value = {}
             new_value["input"] = value["input"]["input"]
@@ -87,9 +67,6 @@ class RagService(object):
             new_value["history"] = value["input"]["history"]
 
             return new_value
-
-
-
 
         chain = (
             {
@@ -102,17 +79,8 @@ class RagService(object):
         conversation_chain = RunnableWithMessageHistory(
             chain,
             get_history,
-            input_messages_key = "input", # 用户输入在模板中的占位符
-            history_messages_key = "history" # 历史消息在模板中的占位符
+            input_messages_key = "input",
+            history_messages_key = "history"
         )
 
         return conversation_chain
-
-if __name__ == '__main__':
-    session_config = {
-            "configurable": {
-                "session_id": "user_002"
-            }
-        }
-    res = RagService().chain.invoke({"input": "我体重120斤，进行尺码推荐"}, session_config) # 记得session_config，以及对于增强链需要传字典（仅仅chain的时候传str）
-    print(res)
