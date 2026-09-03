@@ -41,7 +41,7 @@ class KnowledgeBaseService(object):
 
         self.chroma = Chroma(
             collection_name = config.collection_name,
-            embedding_function = DashScopeEmbeddings(model_name="text-embedding-v4"),
+            embedding_function = DashScopeEmbeddings(model="text-embedding-v4"),
             persist_directory = config.persist_directory
         )
 
